@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+    height: -webkit-fill-available;
+  }
+
+  body {
+    @apply bg-zinc-50 text-zinc-900 antialiased;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .safe-top    { padding-top: env(safe-area-inset-top); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .pb-safe     { padding-bottom: calc(env(safe-area-inset-bottom) + 4.5rem); }
+}
