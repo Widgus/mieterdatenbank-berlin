@@ -2,141 +2,86 @@ import { useState } from 'react'
 import { useProfile } from '../hooks/useProfile'
 
 export function Onboarding() {
-  const inviteCode = new URLSearchParams(window.location.search).get('invite')
-  return inviteCode ? <JoinScreen inviteCode={inviteCode} /> : <CreateScreen />
-}
-
-// ── User A: create a couple ────────────────────────────────────────────────
-function CreateScreen() {
-  const { createCouple, loading, error } = useProfile()
-  const [name, setName]         = useState('')
-  const [inviteUrl, setInviteUrl] = useState(null)
-  const [copied, setCopied]     = useState(false)
+  const { login, loading, error } = useProfile()
+  const [name,     setName]     = useState('')
+  const [password, setPassword] = useState('')
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!name.trim()) return
-    try {
-      const { couple } = await createCouple(name.trim())
-      const url = `${window.location.origin}/?invite=${couple.invite_code}`
-      setInviteUrl(url)
-    } catch {}
+    await login(name, password)
   }
 
-  if (inviteUrl) {
-    return (
-      <Screen>
-        <Emoji>🎉</Emoji>
-        <h1 className="text-2xl font-bold text-zinc-900 mb-2">Fast fertig!</h1>
-        <p className="text-zinc-500 mb-8 text-center text-sm leading-relaxed">
-          Schick deinem Partner diesen Link.<br />Sobald er/sie geklickt hat, geht's los.
-        </p>
+  return (
+    <div
+      className="min-h-screen flex flex-col items-center justify-center px-6"
+      style={{ background: '#f5f0e8', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
+    >
+      {/* Logo */}
+      <div className="mb-10 text-center">
+        <h1
+          className="text-5xl font-black tracking-tight text-zinc-900 uppercase"
+          style={{ letterSpacing: '-0.03em' }}
+        >
+          gutezeit
+        </h1>
+        <p className="mt-2 text-zinc-500 text-sm font-medium">für holly & julius</p>
+      </div>
 
-        <div className="w-full bg-zinc-100 rounded-2xl p-4 mb-4 break-all text-xs text-zinc-600 font-mono">
-          {inviteUrl}
+      {/* Login card */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm bg-white border-2 border-zinc-900 rounded-xl p-6 flex flex-col gap-4"
+        style={{ boxShadow: '4px 4px 0px #18181b' }}
+      >
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-black uppercase tracking-widest text-zinc-700">
+            Name
+          </label>
+          <input
+            type="text"
+            placeholder="Wie heißt du?"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={30}
+            autoFocus
+            autoComplete="name"
+            className="w-full px-3 py-3 border-2 border-zinc-900 rounded-lg text-zinc-900 text-base font-medium outline-none focus:bg-zinc-50 transition-colors placeholder:text-zinc-400"
+          />
         </div>
 
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(inviteUrl).then(() => {
-              setCopied(true)
-              setTimeout(() => setCopied(false), 2000)
-            })
-          }}
-          className="w-full py-4 rounded-2xl bg-zinc-900 text-white font-semibold text-base active:scale-95 transition-transform"
-        >
-          {copied ? '✓ Kopiert!' : 'Link kopieren'}
-        </button>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-black uppercase tracking-widest text-zinc-700">
+            Passwort
+          </label>
+          <input
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            className="w-full px-3 py-3 border-2 border-zinc-900 rounded-lg text-zinc-900 text-base font-medium outline-none focus:bg-zinc-50 transition-colors placeholder:text-zinc-400"
+          />
+        </div>
 
-        <p className="mt-6 text-xs text-zinc-400 text-center">
-          Du wirst automatisch weitergeleitet, sobald dein Partner beigetreten ist.
-        </p>
-      </Screen>
-    )
-  }
+        {error && (
+          <p className="text-sm font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            {error}
+          </p>
+        )}
 
-  return (
-    <Screen>
-      <Emoji>✨</Emoji>
-      <h1 className="text-2xl font-bold text-zinc-900 mb-1">gutezeit</h1>
-      <p className="text-zinc-400 mb-10 text-sm">Wie heißt du?</p>
-
-      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-        <input
-          type="text"
-          placeholder="Dein Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          maxLength={30}
-          autoFocus
-          className="w-full px-4 py-4 rounded-2xl border border-zinc-200 bg-white text-zinc-900 text-base outline-none focus:border-zinc-400 transition-colors"
-        />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           type="submit"
-          disabled={!name.trim() || loading}
-          className="w-full py-4 rounded-2xl bg-zinc-900 text-white font-semibold text-base disabled:opacity-40 active:scale-95 transition-transform"
+          disabled={!name.trim() || !password.trim() || loading}
+          className="w-full py-3.5 rounded-lg bg-zinc-900 text-white font-black text-base uppercase tracking-wide disabled:opacity-40 transition-all active:translate-x-[2px] active:translate-y-[2px]"
+          style={{ boxShadow: '3px 3px 0px #71717a' }}
+          onMouseDown={(e) => { e.currentTarget.style.boxShadow = 'none' }}
+          onMouseUp={(e) => { e.currentTarget.style.boxShadow = '3px 3px 0px #71717a' }}
+          onTouchStart={(e) => { e.currentTarget.style.boxShadow = 'none' }}
+          onTouchEnd={(e) => { e.currentTarget.style.boxShadow = '3px 3px 0px #71717a' }}
         >
-          {loading ? 'Moment…' : 'Loslegen →'}
+          {loading ? 'Moment…' : 'Rein →'}
         </button>
       </form>
-    </Screen>
-  )
-}
-
-// ── User B: join via invite code ───────────────────────────────────────────
-function JoinScreen({ inviteCode }) {
-  const { joinCouple, loading, error } = useProfile()
-  const [name, setName] = useState('')
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (!name.trim()) return
-    try {
-      await joinCouple(name.trim(), inviteCode)
-      // useProfile will update → App re-renders automatically
-      window.history.replaceState({}, '', '/')
-    } catch {}
-  }
-
-  return (
-    <Screen>
-      <Emoji>💌</Emoji>
-      <h1 className="text-2xl font-bold text-zinc-900 mb-1">Du wurdest eingeladen!</h1>
-      <p className="text-zinc-400 mb-10 text-sm">Wie heißt du?</p>
-
-      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-        <input
-          type="text"
-          placeholder="Dein Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          maxLength={30}
-          autoFocus
-          className="w-full px-4 py-4 rounded-2xl border border-zinc-200 bg-white text-zinc-900 text-base outline-none focus:border-zinc-400 transition-colors"
-        />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button
-          type="submit"
-          disabled={!name.trim() || loading}
-          className="w-full py-4 rounded-2xl bg-zinc-900 text-white font-semibold text-base disabled:opacity-40 active:scale-95 transition-transform"
-        >
-          {loading ? 'Moment…' : 'Beitreten →'}
-        </button>
-      </form>
-    </Screen>
-  )
-}
-
-// ── Shared layout ──────────────────────────────────────────────────────────
-function Screen({ children }) {
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-8 safe-top safe-bottom">
-      {children}
     </div>
   )
-}
-
-function Emoji({ children }) {
-  return <div className="text-6xl mb-6 select-none">{children}</div>
 }

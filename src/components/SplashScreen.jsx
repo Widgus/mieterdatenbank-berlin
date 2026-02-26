@@ -11,28 +11,43 @@ function isInHeart(col, row) {
   return Math.pow(x * x + y * y - 1, 3) - x * x * y * y * y <= 0
 }
 
-const CHAOS_COLORS = [
-  '#ff0055', '#ff4400', '#ff9900', '#ffee00', '#aaff00',
-  '#00ffaa', '#00eeff', '#0088ff', '#6600ff', '#ee00ff',
-  '#ff0099', '#00ff66', '#ff6600', '#ff00cc', '#00ccff',
-  '#ccff00', '#ff3300', '#3300ff', '#00ff33', '#ff0033',
+// Retro palette – warm, chaotic, no neons
+const RETRO_CHAOS = [
+  '#c2410c', // burnt orange
+  '#b45309', // amber
+  '#15803d', // forest green
+  '#6d28d9', // violet
+  '#be123c', // crimson
+  '#92400e', // brown
+  '#1e3a5f', // dark navy
+  '#d97706', // golden yellow
+  '#7c2d12', // dark rust
+  '#4c1d95', // deep purple
+  '#064e3b', // dark teal
+  '#7f1d1d', // dark red
+  '#f5f0e8', // parchment (bright contrast)
+  '#18181b', // near-black
+  '#78350f', // warm brown
+  '#1e40af', // royal blue
 ]
 
-function randomChaos() {
-  return CHAOS_COLORS[Math.floor(Math.random() * CHAOS_COLORS.length)]
+// Heart colors: the 5 category palette, cycling by column
+const HEART_PALETTE = ['#b45309', '#15803d', '#6d28d9', '#be123c', '#c2410c']
+
+function randomRetro() {
+  return RETRO_CHAOS[Math.floor(Math.random() * RETRO_CHAOS.length)]
 }
 
-function rainbowColor(col) {
-  const hue = Math.round((col / COLS) * 300)
-  return `hsl(${hue},90%,60%)`
+function heartColor(col) {
+  return HEART_PALETTE[col % HEART_PALETTE.length]
 }
 
-// Precompute on module load
+// Precompute heart mask once
 const HEART_MASK = Array.from({ length: COLS * ROWS }, (_, i) =>
   isInHeart(i % COLS, Math.floor(i / COLS))
 )
 
-const RAINBOW_COLORS = Array.from({ length: COLS }, (_, col) => rainbowColor(col))
+const HEART_COLORS = Array.from({ length: COLS }, (_, col) => heartColor(col))
 
 export function SplashScreen({ onDone }) {
   const canvasRef  = useRef(null)
@@ -51,19 +66,24 @@ export function SplashScreen({ onDone }) {
     const cellW = W / COLS
     const cellH = H / ROWS
 
-    // Init cell colors
+    // Init: heart in palette, rest random retro
     const cells = HEART_MASK.map((heart, i) =>
-      heart ? RAINBOW_COLORS[i % COLS] : randomChaos()
+      heart ? HEART_COLORS[i % COLS] : randomRetro()
     )
 
-    let phase = 0
+    let phase = 0 // 0=chaos 1=emerge 2=heart
 
     function draw() {
       for (let i = 0; i < COLS * ROWS; i++) {
         const col = i % COLS
         const row = Math.floor(i / COLS)
         ctx.fillStyle = cells[i]
-        ctx.fillRect(Math.floor(col * cellW), Math.floor(row * cellH), Math.ceil(cellW) + 1, Math.ceil(cellH) + 1)
+        ctx.fillRect(
+          Math.floor(col * cellW),
+          Math.floor(row * cellH),
+          Math.ceil(cellW) + 1,
+          Math.ceil(cellH) + 1
+        )
       }
     }
 
@@ -73,23 +93,23 @@ export function SplashScreen({ onDone }) {
         const heart = HEART_MASK[i]
 
         if (phase === 0) {
-          // Chaos: all cells flicker ~3.75 Hz, 40% chance per tick
-          if (Math.random() < 0.40) cells[i] = randomChaos()
+          // Full chaos – all cells flicker ~3.75 Hz
+          if (Math.random() < 0.42) cells[i] = randomRetro()
         } else if (phase === 1) {
-          // Emergence: heart cells migrate toward rainbow, rest slow down
+          // Emergence – heart migrates toward palette, rest slows
           if (heart) {
-            if (Math.random() < 0.20) {
-              cells[i] = Math.random() < 0.60 ? RAINBOW_COLORS[col] : randomChaos()
+            if (Math.random() < 0.18) {
+              cells[i] = Math.random() < 0.65 ? HEART_COLORS[col] : randomRetro()
             }
           } else {
-            if (Math.random() < 0.12) cells[i] = randomChaos()
+            if (Math.random() < 0.10) cells[i] = randomRetro()
           }
         } else if (phase === 2) {
-          // Heart locked to rainbow, background almost still
+          // Heart locked, background nearly still
           if (heart) {
-            cells[i] = RAINBOW_COLORS[col]
+            cells[i] = HEART_COLORS[col]
           } else {
-            if (Math.random() < 0.04) cells[i] = randomChaos()
+            if (Math.random() < 0.03) cells[i] = randomRetro()
           }
         }
       }
@@ -97,17 +117,18 @@ export function SplashScreen({ onDone }) {
     }
 
     draw()
-    const interval = setInterval(tick, 267) // ~3.75 Hz – within WCAG 2.3.1
+    const interval = setInterval(tick, 267) // ~3.75 Hz – WCAG 2.3.1 safe
 
-    const t1 = setTimeout(() => { phase = 1 }, 1000)
-    const t2 = setTimeout(() => { phase = 2 }, 2000)
+    // Phase transitions (5s total)
+    const t1 = setTimeout(() => { phase = 1 }, 2000)  // 0–2s chaos
+    const t2 = setTimeout(() => { phase = 2 }, 3500)  // 2–3.5s emerge
     const t3 = setTimeout(() => {
       clearInterval(interval)
-      // Pulse the heart then fade out
-      wrapper.style.transition = 'opacity 0.45s ease-in'
+      // Fade out
+      wrapper.style.transition = 'opacity 0.5s ease-in'
       requestAnimationFrame(() => { wrapper.style.opacity = '0' })
-    }, 2300)
-    const t4 = setTimeout(() => onDone(), 2750)
+    }, 4500)                                           // 3.5–4.5s heart visible
+    const t4 = setTimeout(() => onDone(), 5100)        // 5s done
 
     return () => {
       clearInterval(interval)
@@ -118,7 +139,7 @@ export function SplashScreen({ onDone }) {
   return (
     <div
       ref={wrapperRef}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#000', opacity: 1 }}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#18181b', opacity: 1 }}
     >
       <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
     </div>

@@ -4,6 +4,8 @@ import { AVATAR_COLORS } from '../lib/constants'
 
 const PROFILE_KEY = 'gutezeit_profile'
 const COUPLE_KEY  = 'gutezeit_couple'
+const SHARED_PASSWORD = 'zuzweit'
+const FIXED_INVITE_CODE = 'ZUZWEIT'
 
 function randomColor() {
   return AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)]
@@ -30,10 +32,8 @@ export function useProfile() {
     if (data) setPartner(data)
   }, [])
 
-  // Load partner on mount + realtime subscription for partner joining
   useEffect(() => {
     if (!profile?.couple_id) return
-
     loadPartner(profile.couple_id, profile.id)
 
     const channel = supabase
@@ -48,72 +48,80 @@ export function useProfile() {
     return () => { supabase.removeChannel(channel) }
   }, [profile?.couple_id, profile?.id, loadPartner])
 
-  // Create a new couple (User A flow)
-  const createCouple = async (displayName) => {
+  /**
+   * Shared-password login:
+   * 1. Verify password
+   * 2. Find or create the fixed couple (invite_code = 'ZUZWEIT')
+   * 3. Find existing profile by name (returning user / new device) or create new one
+   * 4. Store in localStorage → app renders main view
+   */
+  const login = async (displayName, password) => {
     setLoading(true)
     setError(null)
-    try {
-      const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase()
 
-      const { data: newCouple, error: coupleErr } = await supabase
-        .from('couples')
-        .insert({ invite_code: inviteCode })
-        .select()
-        .single()
-      if (coupleErr) throw coupleErr
-
-      const { data: newProfile, error: profileErr } = await supabase
-        .from('profiles')
-        .insert({ display_name: displayName, avatar_color: randomColor(), couple_id: newCouple.id })
-        .select()
-        .single()
-      if (profileErr) throw profileErr
-
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(newProfile))
-      localStorage.setItem(COUPLE_KEY,  JSON.stringify(newCouple))
-      setProfile(newProfile)
-      setCouple(newCouple)
-      return { profile: newProfile, couple: newCouple }
-    } catch (err) {
-      setError(err.message)
-      throw err
-    } finally {
+    if (password.trim().toLowerCase() !== SHARED_PASSWORD) {
+      setError('Falsches Passwort.')
       setLoading(false)
+      return
     }
-  }
+    if (!displayName.trim()) {
+      setError('Bitte gib deinen Namen ein.')
+      setLoading(false)
+      return
+    }
 
-  // Join an existing couple via invite code (User B flow)
-  const joinCouple = async (displayName, inviteCode) => {
-    setLoading(true)
-    setError(null)
     try {
-      const { data: foundCouple, error: coupleErr } = await supabase
+      // Find or create the shared couple
+      let foundCouple
+      const { data: existing } = await supabase
         .from('couples')
         .select('*')
-        .eq('invite_code', inviteCode.trim().toUpperCase())
+        .eq('invite_code', FIXED_INVITE_CODE)
         .maybeSingle()
-      if (coupleErr) throw coupleErr
-      if (!foundCouple) throw new Error('Einladungscode nicht gefunden. Bitte nochmal prüfen.')
 
-      const { data: newProfile, error: profileErr } = await supabase
+      if (existing) {
+        foundCouple = existing
+      } else {
+        const { data: created, error: createErr } = await supabase
+          .from('couples')
+          .insert({ invite_code: FIXED_INVITE_CODE })
+          .select()
+          .single()
+        if (createErr) throw createErr
+        foundCouple = created
+      }
+
+      // Find existing profile with this name (returning user on new device)
+      let foundProfile
+      const { data: existingProfile } = await supabase
         .from('profiles')
-        .insert({ display_name: displayName, avatar_color: randomColor(), couple_id: foundCouple.id })
-        .select()
-        .single()
-      if (profileErr) throw profileErr
+        .select('*')
+        .eq('couple_id', foundCouple.id)
+        .ilike('display_name', displayName.trim())
+        .maybeSingle()
 
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(newProfile))
+      if (existingProfile) {
+        foundProfile = existingProfile
+      } else {
+        const { data: newProfile, error: profileErr } = await supabase
+          .from('profiles')
+          .insert({ display_name: displayName.trim(), avatar_color: randomColor(), couple_id: foundCouple.id })
+          .select()
+          .single()
+        if (profileErr) throw profileErr
+        foundProfile = newProfile
+      }
+
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(foundProfile))
       localStorage.setItem(COUPLE_KEY,  JSON.stringify(foundCouple))
-      setProfile(newProfile)
+      setProfile(foundProfile)
       setCouple(foundCouple)
-      return newProfile
     } catch (err) {
       setError(err.message)
-      throw err
     } finally {
       setLoading(false)
     }
   }
 
-  return { profile, couple, partner, loading, error, createCouple, joinCouple }
+  return { profile, couple, partner, loading, error, login }
 }

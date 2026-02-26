@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { Check, RotateCcw, Pencil, Trash2 } from 'lucide-react'
 import { Avatar } from './Avatar'
-import { getCategoryById, getPriorityById, formatDate } from '../lib/constants'
+import { getCategoryById, formatDate } from '../lib/constants'
 
 export function ActivityCard({ activity, onComplete, onUncomplete, onEdit, onDelete, completed = false }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const cat  = getCategoryById(activity.category)
-  const prio = getPriorityById(activity.priority)
+  const cat = getCategoryById(activity.category)
 
   function handleDelete() {
     if (confirmDelete) {
@@ -19,59 +18,61 @@ export function ActivityCard({ activity, onComplete, onUncomplete, onEdit, onDel
 
   return (
     <div
-      className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-zinc-100 ${completed ? 'opacity-70' : ''}`}
-      style={{ borderLeftWidth: 3, borderLeftColor: prio.color }}
+      className={`bg-white border-2 border-zinc-900 rounded-xl overflow-hidden ${completed ? 'opacity-60' : ''}`}
+      style={{ boxShadow: completed ? 'none' : '3px 3px 0px #18181b' }}
     >
       <div className="px-4 py-3">
-        {/* Top row: category + actions */}
-        <div className="flex items-center justify-between mb-2">
+        {/* Top row: category badge + actions */}
+        <div className="flex items-center justify-between mb-2.5">
           <span
-            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold"
-            style={{ background: cat.bg, color: cat.color }}
+            className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest border"
+            style={{ background: cat.bg, color: cat.color, borderColor: cat.color }}
           >
             {cat.label}
           </span>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {!completed && (
               <button
                 onClick={() => onEdit(activity)}
-                className="text-zinc-300 hover:text-zinc-600 active:scale-90 transition-all"
+                className="text-zinc-400 active:text-zinc-900 transition-colors"
               >
-                <Pencil size={15} />
+                <Pencil size={14} />
               </button>
             )}
             <button
               onClick={handleDelete}
-              className={`active:scale-90 transition-all ${confirmDelete ? 'text-red-500' : 'text-zinc-300 hover:text-red-400'}`}
+              className={`transition-colors ${confirmDelete ? 'text-red-600' : 'text-zinc-400 active:text-red-500'}`}
             >
-              <Trash2 size={15} />
+              <Trash2 size={14} />
             </button>
           </div>
         </div>
 
         {/* Title */}
         <h3
-          className={`font-semibold text-zinc-900 text-[15px] leading-snug mb-1 ${completed ? 'line-through text-zinc-400' : ''}`}
+          className={`font-black text-[15px] leading-snug mb-2 ${
+            completed ? 'line-through text-zinc-400' : 'text-zinc-900'
+          }`}
         >
           {activity.title}
         </h3>
 
         {/* Description */}
         {activity.description && (
-          <p className="text-zinc-400 text-xs leading-relaxed mb-2 line-clamp-2">
+          <p className="text-zinc-500 text-xs leading-relaxed mb-2.5 line-clamp-2 font-medium">
             {activity.description}
           </p>
         )}
 
         {/* Bottom row: creator + complete button */}
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-1">
           <div className="flex items-center gap-1.5">
             <Avatar profile={activity.creator} size="xs" />
-            <span className="text-zinc-400 text-[11px]">
+            <span className="text-zinc-500 text-[11px] font-semibold">
               {activity.creator?.display_name ?? '–'}
               {completed && activity.completed_at && (
-                <span className="ml-1">· {formatDate(activity.completed_at)}</span>
+                <span className="text-zinc-400 font-normal ml-1">· {formatDate(activity.completed_at)}</span>
               )}
             </span>
           </div>
@@ -79,25 +80,27 @@ export function ActivityCard({ activity, onComplete, onUncomplete, onEdit, onDel
           {completed ? (
             <button
               onClick={() => onUncomplete(activity.id)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-zinc-400 border border-zinc-200 active:scale-90 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wide text-zinc-500 border border-zinc-300 active:bg-zinc-100 transition-colors"
             >
-              <RotateCcw size={11} />
+              <RotateCcw size={10} />
               Zurück
             </button>
           ) : (
             <button
               onClick={() => onComplete(activity.id)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-zinc-900 text-white active:scale-90 transition-transform"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-md text-[11px] font-black uppercase tracking-wide bg-zinc-900 text-white border-2 border-zinc-900 transition-all active:translate-x-[2px] active:translate-y-[2px]"
+              style={{ boxShadow: '2px 2px 0px #52525b' }}
+              onTouchStart={(e) => { e.currentTarget.style.boxShadow = 'none' }}
+              onTouchEnd={(e) => { e.currentTarget.style.boxShadow = '2px 2px 0px #52525b' }}
             >
-              <Check size={13} strokeWidth={2.5} />
+              <Check size={12} strokeWidth={3} />
               Erledigt
             </button>
           )}
         </div>
 
-        {/* Confirm delete hint */}
         {confirmDelete && (
-          <p className="mt-2 text-red-500 text-xs text-center animate-pulse">
+          <p className="mt-2 text-red-600 text-xs font-bold text-center">
             Nochmal tippen zum Löschen
           </p>
         )}

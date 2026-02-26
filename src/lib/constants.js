@@ -1,16 +1,9 @@
 export const CATEGORIES = [
-  { id: 'food',    label: 'Essen',      color: '#f97316', bg: '#fff7ed', icon: 'UtensilsCrossed' },
-  { id: 'travel',  label: 'Reisen',     color: '#3b82f6', bg: '#eff6ff', icon: 'Plane' },
-  { id: 'home',    label: 'Zuhause',    color: '#22c55e', bg: '#f0fdf4', icon: 'Home' },
-  { id: 'sport',   label: 'Sport',      color: '#ef4444', bg: '#fef2f2', icon: 'Dumbbell' },
-  { id: 'culture', label: 'Kultur',     color: '#a855f7', bg: '#faf5ff', icon: 'Palette' },
-  { id: 'other',   label: 'Sonstiges',  color: '#71717a', bg: '#f4f4f5', icon: 'Tag' },
-]
-
-export const PRIORITIES = [
-  { id: 'high',   label: 'Hoch',     color: '#ef4444' },
-  { id: 'medium', label: 'Mittel',   color: '#f97316' },
-  { id: 'low',    label: 'Niedrig',  color: '#22c55e' },
+  { id: 'academia',     label: 'Soft Academia',                 color: '#b45309', bg: '#fef3c7' },
+  { id: 'grass',        label: 'Touching Grass',                color: '#15803d', bg: '#dcfce7' },
+  { id: 'npc',          label: 'NPC Side Quests',               color: '#6d28d9', bg: '#ede9fe' },
+  { id: 'date',         label: 'Date Night Cinematic Universe', color: '#be123c', bg: '#ffe4e6' },
+  { id: 'conditioning', label: 'Conditioning',                  color: '#c2410c', bg: '#ffedd5' },
 ]
 
 export const AVATAR_COLORS = [
@@ -19,11 +12,7 @@ export const AVATAR_COLORS = [
 ]
 
 export function getCategoryById(id) {
-  return CATEGORIES.find((c) => c.id === id) ?? CATEGORIES[5]
-}
-
-export function getPriorityById(id) {
-  return PRIORITIES.find((p) => p.id === id) ?? PRIORITIES[1]
+  return CATEGORIES.find((c) => c.id === id) ?? CATEGORIES[0]
 }
 
 export function formatDate(isoString) {

@@ -3,7 +3,13 @@
     "allow": [
       "Bash(npm install)",
       "Bash(npm run build)",
-      "Bash(python3 scripts/generate-icons.py)"
+      "Bash(python3 scripts/generate-icons.py)",
+      "Bash(git remote add origin https://github.com/widgus/gutezeit.git)",
+      "Bash(git remote set-url origin https://github.com/widgus/gutezeit.git)",
+      "Bash(git push -u origin main)",
+      "Bash(git add -A)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
     ]
   }
 }
