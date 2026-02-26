@@ -19,14 +19,14 @@ export default function App() {
   const [editActivity, setEditActivity] = useState(null)
   const [filters,      setFilters]      = useState(EMPTY_FILTERS)
 
-  const { profile, partner } = useProfile()
+  const { profile, partner, login, loading: loginLoading, error: loginError } = useProfile()
   const { activities, loading, create, update, complete, uncomplete, remove } = useActivities(
     profile?.couple_id,
     profile?.id
   )
 
   if (showSplash) return <SplashScreen onDone={() => setShowSplash(false)} />
-  if (!profile)  return <Onboarding />
+  if (!profile)  return <Onboarding login={login} loading={loginLoading} error={loginError} />
 
   function openCreate() { setEditActivity(null); setModalOpen(true) }
   function openEdit(a)  { setEditActivity(a);    setModalOpen(true) }

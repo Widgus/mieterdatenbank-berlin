@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import { useProfile } from '../hooks/useProfile'
 
-export function Onboarding() {
-  const { login, loading, error } = useProfile()
+export function Onboarding({ login, loading, error }) {
   const [name,     setName]     = useState('')
   const [password, setPassword] = useState('')
 
