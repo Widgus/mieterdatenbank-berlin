@@ -8,9 +8,10 @@
   }
 
   body {
-    background: #f8fafa;
-    color: #1a1a1a;
+    background: #FAF9F5;
+    color: #141413;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 

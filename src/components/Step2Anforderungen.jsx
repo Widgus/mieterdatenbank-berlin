@@ -37,24 +37,24 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
   }
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 rounded-lg border ${
-      errors[field] ? 'border-red-400 ring-2 ring-red-100' : 'border-gray-300'
-    } focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500 transition-colors`;
+    `w-full px-4 py-3 rounded-btn border ${
+      errors[field] ? 'border-error ring-2 ring-error/20' : 'border-parchment-3'
+    } bg-parchment focus:outline-none focus:ring-2 focus:ring-primary-bright/20 focus:border-primary-bright transition-colors`;
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Wen suchen Sie als Mieter?</h1>
-        <p className="text-gray-500 text-lg">
+        <h1 className="text-3xl font-bold font-headline tracking-headline text-ink mb-2">Wen suchen Sie als Mieter?</h1>
+        <p className="text-ink-3 text-lg">
           Definieren Sie, welche Kriterien Ihr idealer Mieter erfüllen soll. Wir zeigen Ihnen passende Profile.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-6">
+      <div className="bg-parchment-2 rounded-card border border-parchment-3 p-8 space-y-6">
         {/* Max Personen */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Max. Personenanzahl <span className="text-red-400">*</span>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">
+            Max. Personenanzahl <span className="text-error">*</span>
           </label>
           <select
             value={form.maxPersonen}
@@ -66,16 +66,16 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
               <option key={o} value={o}>{o}</option>
             ))}
           </select>
-          {errors.maxPersonen && <p className="text-red-500 text-sm mt-1">Pflichtfeld</p>}
+          {errors.maxPersonen && <p className="text-error text-sm mt-1">Pflichtfeld</p>}
         </div>
 
         {/* Haustiere */}
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-gray-700">Haustiere erlaubt</label>
+          <label className="text-sm font-medium text-ink-2">Haustiere erlaubt</label>
           <div
             onClick={() => update('haustiere', !form.haustiere)}
             className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
-              form.haustiere ? 'bg-primary-500' : 'bg-gray-300'
+              form.haustiere ? 'bg-primary' : 'bg-parchment-3'
             }`}
           >
             <div
@@ -88,7 +88,7 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
 
         {/* Mindest-Nettoeinkommen */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Mindest-Nettoeinkommen (€)</label>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">Mindest-Nettoeinkommen (EUR)</label>
           <input
             type="number"
             value={form.minEinkommen}
@@ -96,12 +96,12 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
             placeholder="z.B. 2.500"
             className={inputClass('minEinkommen')}
           />
-          <p className="text-xs text-gray-400 mt-1">Empfehlung: 3x Kaltmiete</p>
+          <p className="text-xs text-ink-3 mt-1">Empfehlung: 3x Kaltmiete</p>
         </div>
 
         {/* Schufa */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Mindest-Schufa-Score</label>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">Mindest-Schufa-Score</label>
           <select
             value={form.schufa}
             onChange={(e) => update('schufa', e.target.value)}
@@ -115,7 +115,7 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
 
         {/* Beschäftigungsverhältnis */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Beschäftigungsverhältnis</label>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">Beschäftigungsverhältnis</label>
           <div className="flex flex-wrap gap-2">
             {BESCHAEFTIGUNGEN.map((b) => {
               const selected = (form.beschaeftigung || []).includes(b);
@@ -123,13 +123,13 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
                 <button
                   key={b}
                   onClick={() => toggleBeschaeftigung(b)}
-                  className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-pill border text-sm font-medium transition-colors ${
                     selected
-                      ? 'border-primary-500 bg-primary-50 text-primary-700'
-                      : 'border-gray-300 bg-white text-gray-600 hover:border-gray-400'
+                      ? 'border-primary bg-glow-light text-primary'
+                      : 'border-parchment-3 bg-parchment text-ink-2 hover:border-ink-3'
                   }`}
                 >
-                  {selected && '✓ '}{b}
+                  {selected && '\u2713 '}{b}
                 </button>
               );
             })}
@@ -138,11 +138,11 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
 
         {/* Nichtraucher */}
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-gray-700">Nichtraucher bevorzugt</label>
+          <label className="text-sm font-medium text-ink-2">Nichtraucher bevorzugt</label>
           <div
             onClick={() => update('nichtraucher', !form.nichtraucher)}
             className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
-              form.nichtraucher ? 'bg-primary-500' : 'bg-gray-300'
+              form.nichtraucher ? 'bg-primary' : 'bg-parchment-3'
             }`}
           >
             <div
@@ -155,7 +155,7 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
 
         {/* Einzug */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Gewünschter Einzug</label>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">Gewünschter Einzug</label>
           <select
             value={form.einzug}
             onChange={(e) => update('einzug', e.target.value)}
@@ -171,14 +171,14 @@ export default function Step2Anforderungen({ data, onChange, onNext, onBack }) {
       <div className="mt-8 flex justify-between">
         <button
           onClick={onBack}
-          className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+          className="px-6 py-3 border border-parchment-3 text-ink-2 font-medium rounded-btn hover:bg-parchment-2 transition-colors flex items-center gap-2"
         >
           <ChevronLeft size={20} />
           Zurück
         </button>
         <button
           onClick={handleNext}
-          className="px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+          className="px-8 py-3 bg-primary hover:bg-primary-600 text-parchment font-medium rounded-btn transition-colors flex items-center gap-2"
         >
           Passende Mieter anzeigen
           <ChevronRight size={20} />

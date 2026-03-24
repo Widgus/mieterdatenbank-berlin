@@ -19,7 +19,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafa]">
+    <div className="min-h-screen bg-parchment">
       <StepIndicator currentStep={step} onStepClick={setStep} />
 
       <main className="px-6 py-8 pb-24">

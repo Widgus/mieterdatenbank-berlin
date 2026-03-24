@@ -48,24 +48,24 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
   }
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 rounded-lg border ${
-      errors[field] ? 'border-red-400 ring-2 ring-red-100' : 'border-gray-300'
-    } focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500 transition-colors`;
+    `w-full px-4 py-3 rounded-btn border ${
+      errors[field] ? 'border-error ring-2 ring-error/20' : 'border-parchment-3'
+    } bg-parchment focus:outline-none focus:ring-2 focus:ring-primary-bright/20 focus:border-primary-bright transition-colors`;
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Ihre Wohnung</h1>
-        <p className="text-gray-500 text-lg">
+        <h1 className="text-3xl font-bold font-headline tracking-headline text-ink mb-2">Ihre Wohnung</h1>
+        <p className="text-ink-3 text-lg">
           Geben Sie die Eckdaten Ihrer freien Wohnung ein. Wir finden passende Mieter für Sie.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-6">
+      <div className="bg-parchment-2 rounded-card border border-parchment-3 p-8 space-y-6">
         {/* Stadtteil */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Stadtteil <span className="text-red-400">*</span>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">
+            Stadtteil <span className="text-error">*</span>
           </label>
           <select
             value={form.stadtteil}
@@ -77,12 +77,12 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
-          {errors.stadtteil && <p className="text-red-500 text-sm mt-1">Bitte wählen Sie einen Stadtteil</p>}
+          {errors.stadtteil && <p className="text-error text-sm mt-1">Bitte wählen Sie einen Stadtteil</p>}
         </div>
 
         {/* Straße */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Straße + Hausnummer</label>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">Straße + Hausnummer</label>
           <input
             type="text"
             value={form.strasse}
@@ -95,8 +95,8 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
         {/* Wohnfläche + Zimmer */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Wohnfläche (qm) <span className="text-red-400">*</span>
+            <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">
+              Wohnfläche (qm) <span className="text-error">*</span>
             </label>
             <input
               type="number"
@@ -105,11 +105,11 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
               placeholder="z.B. 70"
               className={inputClass('wohnflaeche')}
             />
-            {errors.wohnflaeche && <p className="text-red-500 text-sm mt-1">Pflichtfeld</p>}
+            {errors.wohnflaeche && <p className="text-error text-sm mt-1">Pflichtfeld</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Zimmeranzahl <span className="text-red-400">*</span>
+            <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">
+              Zimmeranzahl <span className="text-error">*</span>
             </label>
             <select
               value={form.zimmer}
@@ -121,15 +121,15 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
                 <option key={z} value={z}>{z}</option>
               ))}
             </select>
-            {errors.zimmer && <p className="text-red-500 text-sm mt-1">Pflichtfeld</p>}
+            {errors.zimmer && <p className="text-error text-sm mt-1">Pflichtfeld</p>}
           </div>
         </div>
 
         {/* Kaltmiete + Warmmiete */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Kaltmiete (€) <span className="text-red-400">*</span>
+            <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">
+              Kaltmiete (EUR) <span className="text-error">*</span>
             </label>
             <input
               type="number"
@@ -138,11 +138,11 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
               placeholder="z.B. 850"
               className={inputClass('kaltmiete')}
             />
-            {errors.kaltmiete && <p className="text-red-500 text-sm mt-1">Pflichtfeld</p>}
+            {errors.kaltmiete && <p className="text-error text-sm mt-1">Pflichtfeld</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Warmmiete (€) <span className="text-red-400">*</span>
+            <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">
+              Warmmiete (EUR) <span className="text-error">*</span>
             </label>
             <input
               type="number"
@@ -151,63 +151,67 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
               placeholder="z.B. 1.100"
               className={inputClass('warmmiete')}
             />
-            {errors.warmmiete && <p className="text-red-500 text-sm mt-1">Pflichtfeld</p>}
+            {errors.warmmiete && <p className="text-error text-sm mt-1">Pflichtfeld</p>}
           </div>
         </div>
 
         {/* Etage */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Etage</label>
-            <select
-              value={form.etage}
-              onChange={(e) => update('etage', e.target.value)}
-              className={inputClass('etage')}
+        <div>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">Etage</label>
+          <select
+            value={form.etage}
+            onChange={(e) => update('etage', e.target.value)}
+            className={inputClass('etage')}
+          >
+            <option value="">Bitte wählen...</option>
+            {ETAGE_OPTIONEN.map((e) => (
+              <option key={e} value={e}>{e}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Aufzug + Balkon */}
+        <div className="flex items-center gap-10">
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => update('aufzug', !form.aufzug)}
+          >
+            <div
+              className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                form.aufzug ? 'bg-primary' : 'bg-parchment-3'
+              }`}
             >
-              <option value="">Bitte wählen...</option>
-              {ETAGE_OPTIONEN.map((e) => (
-                <option key={e} value={e}>{e}</option>
-              ))}
-            </select>
+              <div
+                className={`w-5 h-5 bg-white rounded-full shadow absolute top-0.5 transition-all ${
+                  form.aufzug ? 'left-[1.375rem]' : 'left-0.5'
+                }`}
+              />
+            </div>
+            <span className="text-sm font-medium text-ink-2">Aufzug</span>
           </div>
-          <div className="flex items-end gap-8 pb-3">
-            <label className="flex items-center gap-2 cursor-pointer">
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => update('balkon', !form.balkon)}
+          >
+            <div
+              className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                form.balkon ? 'bg-primary' : 'bg-parchment-3'
+              }`}
+            >
               <div
-                onClick={() => update('aufzug', !form.aufzug)}
-                className={`w-11 h-6 rounded-full transition-colors relative ${
-                  form.aufzug ? 'bg-primary-500' : 'bg-gray-300'
+                className={`w-5 h-5 bg-white rounded-full shadow absolute top-0.5 transition-all ${
+                  form.balkon ? 'left-[1.375rem]' : 'left-0.5'
                 }`}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow absolute top-0.5 transition-transform ${
-                    form.aufzug ? 'translate-x-5.5 left-[1.375rem]' : 'left-0.5'
-                  }`}
-                />
-              </div>
-              <span className="text-sm text-gray-700">Aufzug</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                onClick={() => update('balkon', !form.balkon)}
-                className={`w-11 h-6 rounded-full transition-colors relative ${
-                  form.balkon ? 'bg-primary-500' : 'bg-gray-300'
-                }`}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow absolute top-0.5 transition-transform ${
-                    form.balkon ? 'left-[1.375rem]' : 'left-0.5'
-                  }`}
-                />
-              </div>
-              <span className="text-sm text-gray-700">Balkon / Terrasse</span>
-            </label>
+              />
+            </div>
+            <span className="text-sm font-medium text-ink-2">Balkon / Terrasse</span>
           </div>
         </div>
 
         {/* Verfügbar ab */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Verfügbar ab <span className="text-red-400">*</span>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">
+            Verfügbar ab <span className="text-error">*</span>
           </label>
           <input
             type="date"
@@ -215,12 +219,12 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
             onChange={(e) => update('verfuegbarAb', e.target.value)}
             className={inputClass('verfuegbarAb')}
           />
-          {errors.verfuegbarAb && <p className="text-red-500 text-sm mt-1">Pflichtfeld</p>}
+          {errors.verfuegbarAb && <p className="text-error text-sm mt-1">Pflichtfeld</p>}
         </div>
 
         {/* Besonderheiten */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Besonderheiten</label>
+          <label className="block text-[10px] font-medium uppercase tracking-section text-ink-3 mb-2">Besonderheiten</label>
           <textarea
             value={form.besonderheiten}
             onChange={(e) => update('besonderheiten', e.target.value)}
@@ -234,7 +238,7 @@ export default function Step1Wohnung({ data, onChange, onNext }) {
       <div className="mt-8 flex justify-end">
         <button
           onClick={handleNext}
-          className="px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+          className="px-8 py-3 bg-primary hover:bg-primary-600 text-parchment font-medium rounded-btn transition-colors flex items-center gap-2"
         >
           Weiter zu Mieter-Anforderungen
           <ChevronRight size={20} />
