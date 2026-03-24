@@ -61,8 +61,8 @@ export default function Step3Ergebnisse({ wohnungData, selected, onSelectionChan
         </div>
         <div className="bg-parchment-2 rounded-sm-card border border-parchment-3 px-4 py-3 text-sm text-ink-2 flex-shrink-0 ml-6">
           <span className="font-medium text-ink">{wohnungData?.stadtteil || 'Schöneberg'}</span>
-          {' \u00b7 '}
-          {wohnungData?.zimmer || '2,5'} Zi \u00b7 {wohnungData?.wohnflaeche || '70'} qm \u00b7 {kaltmiete} \u20ac kalt
+          {' · '}
+          {wohnungData?.zimmer || '2,5'} Zi · {wohnungData?.wohnflaeche || '70'} qm · {kaltmiete} € kalt
         </div>
       </div>
 
