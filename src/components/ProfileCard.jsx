@@ -14,10 +14,10 @@ function Avatar({ vorname, nachname, color, size = 64 }) {
 }
 
 function SchufaBadge({ score, label }) {
-  const color = score >= 400 ? 'text-success bg-success/10' : score >= 350 ? 'text-success bg-success/10' : score >= 300 ? 'text-yellow-600 bg-yellow-50' : 'text-error bg-error/10';
+  const color = score >= 97 ? 'text-success bg-success/10' : score >= 90 ? 'text-success bg-success/10' : 'text-yellow-600 bg-yellow-50';
   return (
     <span className={`text-xs font-medium px-2 py-0.5 rounded-pill ${color}`}>
-      {label} ({score})
+      {label} ({score} %)
     </span>
   );
 }

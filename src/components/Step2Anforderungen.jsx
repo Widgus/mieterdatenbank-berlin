@@ -6,7 +6,7 @@ const INITIAL = {
   maxPersonen: '2',
   haustiere: false,
   minEinkommen: '2500',
-  schufa: 'Gut (>300)',
+  schufa: 'Gut (>90 %)',
   beschaeftigung: ['Festangestellt', 'Verbeamtet'],
   nichtraucher: true,
   einzug: 'Innerhalb 1 Monat',
